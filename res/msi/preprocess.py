@@ -84,6 +84,18 @@ def make_parser():
         "--app-name", type=str, default="RustDesk", help="The app name."
     )
     parser.add_argument(
+        "--product-name",
+        type=str,
+        default="",
+        help="Display name shown to users; defaults to --app-name.",
+    )
+    parser.add_argument(
+        "--keep-upstream-license",
+        action="store_true",
+        help="Do not rewrite the upstream copyright/attribution out of "
+             "the EULA shown by the installer.",
+    )
+    parser.add_argument(
         "-v", "--version", type=str, default="", help="The app version."
     )
     parser.add_argument(
@@ -250,7 +262,8 @@ def gen_pre_vars(args, dist_dir):
             f'{indent}<?define Version="{g_version}" ?>\n',
             f'{indent}<?define Manufacturer="{args.manufacturer}" ?>\n',
             f'{indent}<?define Product="{args.app_name}" ?>\n',
-            f'{indent}<?define Description="{args.app_name} Installer" ?>\n',
+            f'{indent}<?define ProductDisplayName="{args.product_name}" ?>\n',
+            f'{indent}<?define Description="{args.product_name} Installer" ?>\n',
             f'{indent}<?define ProductLower="{args.app_name.lower()}" ?>\n',
             f'{indent}<?define RegKeyRoot=".$(var.ProductLower)" ?>\n',
             f'{indent}<?define RegKeyInstall="$(var.RegKeyRoot)\\Install" ?>\n',
@@ -531,6 +544,8 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     app_name = args.app_name
+    if not args.product_name:
+        args.product_name = app_name
     dist_dir = Path(sys.argv[0]).parent.joinpath(args.dist_dir).resolve()
 
     if not prepare_resources():
@@ -539,7 +554,9 @@ if __name__ == "__main__":
     if not init_global_vars(dist_dir, app_name, args):
         sys.exit(-1)
 
-    update_license_file(app_name)
+    # 默认不改写许可协议：AGPL-3.0 要求保留上游版权与署名。
+    if not args.keep_upstream_license:
+        update_license_file(app_name)
 
     if not gen_pre_vars(args, dist_dir):
         sys.exit(-1)
@@ -568,4 +585,4 @@ if __name__ == "__main__":
     if not gen_custom_dialog_bitmaps():
         sys.exit(-1)
 
-    replace_app_name_in_langs(args.app_name)
+    replace_app_name_in_langs(args.product_name)

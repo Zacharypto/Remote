@@ -26,10 +26,10 @@ windows = { version = "0.61", features = [
 native-windows-gui = {version = "1.0", default-features = false, features = ["animation-timer", "image-decoder"]}
 
 [package.metadata.winres]
-LegalCopyright = "Copyright © 2026 Purslane Tech Pte. Ltd. All rights reserved."
-ProductName = "RustDesk"
-OriginalFilename = "rustdesk.exe"
-FileDescription = "RustDesk Remote Desktop"
+LegalCopyright = "Copyright (c) 2026 Haxfer. Portions (c) 2026 Purslane Tech Pte. Ltd."
+ProductName = "Haxfer Remote"
+OriginalFilename = "HaxferRemote.exe"
+FileDescription = "Haxfer Remote Desktop"
 #ProductVersion = ""
 
 [target.'cfg(target_os="windows")'.build-dependencies]

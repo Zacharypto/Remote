@@ -1,15 +1,15 @@
 html {
-    var(accent): #0071ff;
-    var(button): #2C8CFF;
-    var(gray-bg): #eee;
-    var(bg): white;
-    var(border): #ccc;
+    var(accent): #0A84FF;
+    var(button): #2E96FF;
+    var(gray-bg): #F2F2EF;
+    var(bg): #F7F7F4;
+    var(border): #DCDBD5;
     var(hover-border): #999;
     var(text): #222;
     var(placeholder): #aaa;
     var(lighter-text): #888;
     var(light-text): #666;
-    var(menu-hover): #D7E4F2;
+    var(menu-hover): #DCE7F5;
     var(dark-red): #A72145;
     var(dark-yellow): #FBC732;
     var(dark-blue): #2E2459;

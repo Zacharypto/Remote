@@ -1,0 +1,64 @@
+name: Build Haxfer Remote
+
+# 放到你 fork 的 rustdesk 仓库的 .github/workflows/ 目录下。
+# 它只是「调用」上游自带的 flutter-build.yml（可复用工作流），
+# 真正干活的是上游那套经过验证的跨平台编译流水线。
+#
+# 触发方式：
+#   1. 手动：Actions -> Build Haxfer Remote -> Run workflow
+#   2. 打 tag：git tag v1.0.0 && git push origin v1.0.0
+#
+# 产物：Windows x64 + Windows ARM64 + Linux + macOS + Android，全部自动产出。
+#
+# ℹ️ Windows ARM64 用的是 GitHub 托管的 windows-11-arm runner。
+#    2026-01-29 起它已支持私有仓库（公开 4 vCPU / 私有 2 vCPU，私有计入 Actions 分钟额度）。
+#    上游开了 fail-fast: false，所以 ARM64 出问题不会连累 x64。
+#
+# ⚠️ 仓库保持公开时的产物暴露面（本项目的处理见下）：
+#    公开仓库的 Actions 产物**任何人无需登录即可下载**。
+#    · Actions 产物：默认保留 90 天后自动删（公开仓库可调 1~90 天）
+#    · Release 资产：**不会自动删**，要手动清；建成 draft 则只有自己可见
+#
+#    ⚠️ 不要把下面的 upload-artifact 改成 false！
+#       上游 flutter-build.yml 用同一个开关门控了「上传产物」和「发布 Release」
+#       （50+ 处 if: env.UPLOAD_ARTIFACT == 'true'，含 Publish Release 那步），
+#       还有多个 job 的整体 if 也是它。改成 false 会**什么都拿不到**。
+#       该开关的原本用途是上游自己跑 CI 测试。
+#
+#    本项目采用「方式 A」：保留 upload-artifact: true，
+#    但去上游 flutter-build.yml 把 **16 处** `prerelease: true` 全改成
+#    `draft: true`（**每个平台 job 各有一处**：Windows x64/ARM64、Windows
+#    Sciter、macOS dmg、Android ×4、Linux deb/rpm、Arch、DRM、Sciter、AppImage、
+#    Flatpak、Web、SBOM），使 Release 变成只有自己可见的草稿。
+#    ⚠️ 只改 Windows 那一两处是防不住的 —— 其余平台的产物仍会落进公开的预览版。
+#    改造脚本的阶段 10 已自动处理（count=16，数量对不上会直接中止）。
+#    详见 docs/平台与架构支持.md 第七节。
+
+on:
+  workflow_dispatch:
+    inputs:
+      upload-tag:
+        description: "上传产物到 Release 时使用的 tag 名"
+        required: true
+        default: "nightly"
+  push:
+    tags:
+      - "v*"
+
+# 发布 Release 需要写权限
+permissions:
+  contents: write
+
+jobs:
+  build:
+    # 引用本仓库内的上游可复用工作流
+    uses: ./.github/workflows/flutter-build.yml
+    # 把本仓库的 secrets 透传进去
+    # （不配置任何签名 secret 时，产出的是未签名安装包，足够自用；
+    #   要正式分发再补 SIGN_BASE_URL / MACOS_P12_BASE64 / ANDROID_SIGNING_KEY）
+    secrets: inherit
+    with:
+      # 保持 true！改成 false 会连 Release 一起关掉（见文件头说明）。
+      # 「产物只对我可见」是靠改上游的 prerelease→draft 实现的。
+      upload-artifact: true
+      upload-tag: ${{ github.event.inputs.upload-tag || 'nightly' }}
