@@ -750,6 +750,10 @@ def build_flutter_deb(version, features):
     system2('rm tmpdeb/usr/bin/rustdesk || true')
     system2(
         f'cp -r {flutter_build_dir}/* tmpdeb/usr/share/rustdesk/')
+    # Haxfer: BINARY_NAME 改成了 HaxferRemote，bundle 里的可执行文件也叫这个名。
+    # deb 的 desktop / systemd / polkit 以及 appimage 的 recipe 都按 'rustdesk'
+    # 引用它，补一个软链接让两种名字都可用。
+    system2('ln -sf HaxferRemote tmpdeb/usr/share/rustdesk/rustdesk')
     system2(
         'cp ../res/rustdesk.service tmpdeb/usr/share/rustdesk/files/systemd/')
     system2(
