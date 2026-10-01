@@ -61,4 +61,9 @@ jobs:
       # 保持 true！改成 false 会连 Release 一起关掉（见文件头说明）。
       # 「产物只对我可见」是靠改上游的 prerelease→draft 实现的。
       upload-artifact: true
-      upload-tag: ${{ github.event.inputs.upload-tag || 'nightly' }}
+      # ⚠️ 必须回落到 github.ref_name（= tag 名）。
+      #    因为 push tag 触发时 github.event.inputs 是空的，只写 `|| 'nightly'`
+      #    会把所有 tag 构建的产物都塞进那个叫 nightly 的旧草稿里 ——
+      #    Releases 页面上就永远看不到 vX.Y.Z。
+      #    （v0.1.0 之所以有独立草稿，是因为那次是手动 Run workflow 并填了 upload-tag。）
+      upload-tag: ${{ github.event.inputs.upload-tag || github.ref_name || 'nightly' }}
