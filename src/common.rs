@@ -2152,15 +2152,21 @@ async fn secure_tcp_impl(conn: &mut Stream, key: &str, log_on_success: bool) -> 
 }
 
 /// The server's key exchange on `conn`. `Ok(true)` once the stream is encrypted. `Ok(false)`
-/// when the server sent something else first, nothing parseable, or closed: `secure_tcp`
-/// tolerates that for servers from before the exchange, `secure_tcp_required` does not.
+/// when the server sent something else first, nothing parseable, closed, or stayed silent:
+/// `secure_tcp` tolerates that for servers from before the exchange, `secure_tcp_required`
+/// does not.
+///
+/// Haxfer: the silent case matters. OSS hbbs never sends `KeyExchange` (no `set_key_exchange`
+/// anywhere in rustdesk-server), so a bare-TCP client used to fail here on an 18s timeout and
+/// never reach `RegisterPk` at all. Timing out now counts as "server predates the exchange",
+/// which is what `secure_tcp` is documented to tolerate; `secure_tcp_required` still rejects it.
 async fn key_exchange(conn: &mut Stream, key: &str, log_on_success: bool) -> ResultType<bool> {
     let rs_pk = get_rs_pk(key);
     let Some(rs_pk) = rs_pk else {
         bail!("Handshake failed: invalid public key from rendezvous server");
     };
-    match timeout(READ_TIMEOUT, conn.next()).await? {
-        Some(Ok(bytes)) => {
+    match timeout(READ_TIMEOUT, conn.next()).await {
+        Ok(Some(Ok(bytes))) => {
             if let Ok(msg_in) = RendezvousMessage::parse_from_bytes(&bytes) {
                 match msg_in.union {
                     Some(rendezvous_message::Union::KeyExchange(ex)) => {
@@ -2218,7 +2224,13 @@ async fn key_exchange(conn: &mut Stream, key: &str, log_on_success: bool) -> Res
                 }
             }
         }
-        _ => {}
+        _ => {
+            // Haxfer: timeout, EOF or read error. A server that predates the exchange stays
+            // silent, so this is the expected path against OSS hbbs rather than a failure.
+            log::debug!(
+                "no key exchange from rendezvous server; continuing without transport encryption"
+            );
+        }
     }
     Ok(false)
 }
