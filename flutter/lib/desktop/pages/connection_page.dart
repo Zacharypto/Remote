@@ -78,9 +78,13 @@ class _OnlineStatusWidgetState extends State<OnlineStatusWidget> {
               .marginOnly(left: em),
         );
 
+    // 定制客户端不显示「自建服务器」引导：这条引导会跳转 rustdesk.com。
+    // 上游注释已写明本意（No need to show the guide if is custom client），
+    // 但代码里漏了 isCustomClient() 判定，这里补上。
     setupServerWidget() => Flexible(
           child: Offstage(
-            offstage: !(!_svcStopped.value &&
+            offstage: !(!bind.isCustomClient() &&
+                !_svcStopped.value &&
                 stateGlobal.svcStatus.value == SvcStatus.ready &&
                 _svcIsUsingPublicServer.value),
             child: Row(
@@ -347,8 +351,12 @@ class _ConnectionPageState extends State<ConnectionPage>
       width: 320 + 20 * 2,
       padding: const EdgeInsets.fromLTRB(20, 24, 20, 22),
       decoration: BoxDecoration(
-          borderRadius: const BorderRadius.all(Radius.circular(13)),
-          border: Border.all(color: Theme.of(context).colorScheme.background)),
+          borderRadius: const BorderRadius.all(Radius.circular(14)),
+          color: Theme.of(context).cardColor,
+          border: Border.all(
+              color: Theme.of(context).brightness == Brightness.dark
+                  ? const Color(0xFF1E2E52)
+                  : const Color(0xFFD5E1F0))),
       child: Ink(
         child: Column(
           children: [

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-const sidebarColor = Color(0xFF0A84FF);
+const sidebarColor = Color(0xFF0153F6);
 const backgroundStartColor = Color(0xFF0A1A3E);
 const backgroundEndColor = Color(0xFF0A62D8);
 

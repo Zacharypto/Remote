@@ -7,6 +7,21 @@ import '../../common.dart';
 Widget getConnectionPageTitle(BuildContext context, bool isWeb) {
   return Row(
     children: [
+      // Haxfer signal accent: a short brand-blue→cyan bar anchors page titles
+      // without adding decorative noise.
+      Container(
+        width: 3,
+        height: 16,
+        margin: const EdgeInsets.only(right: 9),
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+            colors: [MyTheme.accent, MyTheme.cyan],
+          ),
+          borderRadius: BorderRadius.all(Radius.circular(2)),
+        ),
+      ),
       Expanded(
           child: Row(
         children: [

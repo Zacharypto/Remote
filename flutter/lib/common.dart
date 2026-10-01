@@ -167,31 +167,31 @@ class ColorThemeExtension extends ThemeExtension<ColorThemeExtension> {
   final Color? divider;
 
   static final light = ColorThemeExtension(
-    border: Color(0xFFDCDBD5),
-    border2: Color(0xFFC4C2B9),
-    border3: Colors.black26,
-    highlight: Color(0xFFEAE9E4),
-    drag_indicator: Colors.grey[800],
-    shadow: Colors.black,
-    errorBannerBg: Color(0xFFFDEEEB),
-    me: Colors.green,
-    toastBg: Colors.black.withOpacity(0.6),
+    border: Color(0xFFD5E1F0),
+    border2: Color(0xFFB8CBE5),
+    border3: Color(0x332B5B92),
+    highlight: Color(0xFFE8F2FF),
+    drag_indicator: Color(0xFF56749E),
+    shadow: Color(0xFF173A66),
+    errorBannerBg: Color(0xFFFFF0ED),
+    me: Color(0xFF16A34A),
+    toastBg: Color(0xE6101828),
     toastText: Colors.white,
-    divider: Colors.black38,
+    divider: Color(0x553F6A9F),
   );
 
   static final dark = ColorThemeExtension(
-    border: Color(0xFF2A3D66),
-    border2: Color(0xFFC2EEFC),
-    border3: Colors.white24,
-    highlight: Color(0xFF182B55),
-    drag_indicator: Colors.grey,
-    shadow: Colors.grey,
-    errorBannerBg: Color(0xFF470F2D),
-    me: Colors.greenAccent,
-    toastBg: Colors.white.withOpacity(0.6),
-    toastText: Colors.black,
-    divider: Colors.white38,
+    border: Color(0xFF1E2E52),
+    border2: Color(0xFF2A4776),
+    border3: Color(0x336F9BD0),
+    highlight: Color(0xFF152A52),
+    drag_indicator: Color(0xFF91A9CC),
+    shadow: Color(0xFF020817),
+    errorBannerBg: Color(0xFF431F2B),
+    me: Color(0xFF3DD68C),
+    toastBg: Color(0xE8E8EEF9),
+    toastText: Color(0xFF070E22),
+    divider: Color(0x664B6F9E),
   );
 
   @override
@@ -248,18 +248,23 @@ class ColorThemeExtension extends ThemeExtension<ColorThemeExtension> {
 class MyTheme {
   MyTheme._();
 
-  static const Color grayBg = Color(0xFFF2F2EF);
-  static const Color accent = Color(0xFF0A84FF);
-  static const Color accent50 = Color(0x770A84FF);
-  static const Color accent80 = Color(0xAA0A84FF);
+  static const Color grayBg = Color(0xFFF1F5FB);
+  static const Color accent = Color(0xFF0153F6);
+  static const Color accent50 = Color(0x770153F6);
+  static const Color accent80 = Color(0xAA0153F6);
   static const Color canvasColor = Color(0xFF070E22);
-  static const Color border = Color(0xFFDCDBD5);
-  static const Color idColor = Color(0xFF22C7FE);
-  static const Color darkGray = Color.fromARGB(255, 138, 140, 147);
+  static const Color border = Color(0xFFD5E1F0);
+  static const Color idColor = Color(0xFF02ABFC);
+  static const Color cyan = Color(0xFF27E6FC);
+  // Muted icon colour for the un-hovered state. Upstream used #DDDDDD /
+  // grey@50%, which sits at 1.3:1 on the light surfaces — effectively invisible.
+  // This cool grey-blue clears 3.7:1 on both the light and the dark surfaces.
+  static const Color iconMuted = Color(0xFF6B7D9C);
+  static const Color darkGray = Color.fromARGB(255, 148, 148, 148);
   static const Color cmIdColor = Color(0xFF21790B);
-  static const Color dark = Colors.black87;
-  static const Color button = Color(0xFF2E96FF);
-  static const Color hoverBorder = Color(0xFFA9A79C);
+  static const Color dark = Color(0xFF101828);
+  static const Color button = Color(0xFF0153F6);
+  static const Color hoverBorder = Color(0xFF7B9CCB);
 
   // ListTile
   static const ListTileThemeData listTileTheme = ListTileThemeData(
@@ -373,8 +378,8 @@ class MyTheme {
     // https://stackoverflow.com/questions/77537315/after-upgrading-to-flutter-3-16-the-app-bar-background-color-button-size-and
     useMaterial3: false,
     brightness: Brightness.light,
-    hoverColor: Color.fromARGB(255, 236, 236, 231),
-    scaffoldBackgroundColor: Color(0xFFF7F7F4),
+    hoverColor: Color(0xFFE4EFFC),
+    scaffoldBackgroundColor: Color(0xFFF7F9FC),
     dialogBackgroundColor: Colors.white,
     appBarTheme: AppBarTheme(
       shadowColor: Colors.transparent,
@@ -385,39 +390,39 @@ class MyTheme {
         borderRadius: BorderRadius.circular(18.0),
         side: BorderSide(
           width: 1,
-          color: Color(0xFFE5E4DF),
+          color: Color(0xFFD5E1F0),
         ),
       ),
     ),
     scrollbarTheme: scrollbarTheme,
     inputDecorationTheme: isDesktop
         ? InputDecorationTheme(
-            fillColor: Color(0xFFFFFFFF),
+            fillColor: Color(0xFFEEF4FB),
             filled: true,
             isDense: true,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Color(0xFFE5E4DF)),
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Color(0xFFD5E1F0)),
             ),
             enabledBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: Color(0xFFE5E4DF)),
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Color(0xFFD5E1F0)),
             ),
             focusedBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-              borderSide: BorderSide(color: MyTheme.accent, width: 1.5),
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: MyTheme.cyan, width: 1.5),
             ),
           )
         : null,
     textTheme: const TextTheme(
-        titleLarge: TextStyle(fontSize: 19, color: Colors.black87),
-        titleSmall: TextStyle(fontSize: 14, color: Colors.black87),
-        bodySmall: TextStyle(fontSize: 12, color: Colors.black87, height: 1.25),
+        titleLarge: TextStyle(fontSize: 19, color: Color(0xFF101828)),
+        titleSmall: TextStyle(fontSize: 14, color: Color(0xFF101828)),
+        bodySmall: TextStyle(fontSize: 12, color: Color(0xFF475467), height: 1.25),
         bodyMedium:
-            TextStyle(fontSize: 14, color: Colors.black87, height: 1.25),
+            TextStyle(fontSize: 14, color: Color(0xFF344054), height: 1.25),
         labelLarge: TextStyle(fontSize: 16.0, color: MyTheme.accent80)),
-    cardColor: Color(0xFFFFFFFF),
-    hintColor: Color(0xFF8B8D94),
+    cardColor: Color(0xFFF1F5FB),
+    hintColor: Color(0xFF667085),
     visualDensity: VisualDensity.adaptivePlatformDensity,
     tabBarTheme: const TabBarTheme(
       labelColor: Colors.black87,
@@ -439,17 +444,21 @@ class MyTheme {
     elevatedButtonTheme: ElevatedButtonThemeData(
       style: ElevatedButton.styleFrom(
         backgroundColor: MyTheme.accent,
+        foregroundColor: Colors.white,
+        elevation: 0,
+        padding: EdgeInsets.symmetric(horizontal: 18, vertical: 12),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(9.0),
         ),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        backgroundColor: Color(0xFFFFFFFF),
-        foregroundColor: Colors.black87,
+        backgroundColor: Color(0xFFF4F8FD),
+        foregroundColor: Color(0xFF12305C),
+        side: BorderSide(color: Color(0xFFC9D9EF)),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(9.0),
         ),
       ),
     ),
@@ -459,17 +468,19 @@ class MyTheme {
     listTileTheme: listTileTheme,
     menuBarTheme: MenuBarThemeData(
         style:
-            MenuStyle(backgroundColor: MaterialStatePropertyAll(Colors.white))),
+            MenuStyle(backgroundColor: MaterialStatePropertyAll(Color(0xFFF1F5FB)))),
     colorScheme: ColorScheme.light(
-        primary: accent, secondary: accent, background: grayBg),
+        primary: accent,
+        secondary: cyan,
+        background: Color(0xFFF7F9FC),
+        surface: Colors.white,
+        onPrimary: Colors.white,
+        onSurface: Color(0xFF101828)),
     popupMenuTheme: PopupMenuThemeData(
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          side: BorderSide(
-              color: (isDesktop || isWebDesktop)
-                  ? Color(0xFFECECEC)
-                  : Colors.transparent),
-          borderRadius: BorderRadius.all(Radius.circular(8.0)),
+          side: BorderSide(color: Color(0xFFD5E1F0)),
+          borderRadius: BorderRadius.all(Radius.circular(10.0)),
         )),
   ).copyWith(
     extensions: <ThemeExtension<dynamic>>[
@@ -480,9 +491,9 @@ class MyTheme {
   static ThemeData darkTheme = ThemeData(
     useMaterial3: false,
     brightness: Brightness.dark,
-    hoverColor: Color.fromARGB(255, 24, 43, 85),
+    hoverColor: Color(0xFF16294E),
     scaffoldBackgroundColor: Color(0xFF070E22),
-    dialogBackgroundColor: Color(0xFF0B1631),
+    dialogBackgroundColor: Color(0xFF112042),
     appBarTheme: AppBarTheme(
       shadowColor: Colors.transparent,
     ),
@@ -492,18 +503,27 @@ class MyTheme {
         borderRadius: BorderRadius.circular(18.0),
         side: BorderSide(
           width: 1,
-          color: Color(0xFF182B55),
+          color: Color(0xFF1E2E52),
         ),
       ),
     ),
     scrollbarTheme: scrollbarThemeDark,
     inputDecorationTheme: (isDesktop || isWebDesktop)
         ? InputDecorationTheme(
-            fillColor: Color(0xFF0B1631),
+            fillColor: Color(0xFF0D1930),
             filled: true,
             isDense: true,
             border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Color(0xFF1E2E52)),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: Color(0xFF1E2E52)),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(10),
+              borderSide: BorderSide(color: MyTheme.cyan, width: 1.5),
             ),
           )
         : null,
@@ -521,7 +541,7 @@ class MyTheme {
     cardColor: Color(0xFF112042),
     visualDensity: VisualDensity.adaptivePlatformDensity,
     tabBarTheme: const TabBarTheme(
-      labelColor: Colors.white70,
+      labelColor: Color(0xFFE8EEF9),
     ),
     tooltipTheme: tooltipTheme(),
     splashColor: (isDesktop || isWebDesktop) ? Colors.transparent : null,
@@ -545,19 +565,21 @@ class MyTheme {
         foregroundColor: Colors.white,
         disabledForegroundColor: Colors.white70,
         disabledBackgroundColor: Colors.white10,
+        elevation: 0,
+        padding: EdgeInsets.symmetric(horizontal: 18, vertical: 12),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(9.0),
         ),
       ),
     ),
     outlinedButtonTheme: OutlinedButtonThemeData(
       style: OutlinedButton.styleFrom(
-        backgroundColor: Color(0xFF112042),
-        side: BorderSide(color: Colors.white12, width: 0.5),
+        backgroundColor: Color(0xFF0D1930),
+        side: BorderSide(color: Color(0xFF2A4776), width: 1),
         disabledForegroundColor: Colors.white70,
-        foregroundColor: Colors.white70,
+        foregroundColor: Color(0xFFD6E4FA),
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(9.0),
         ),
       ),
     ),
@@ -570,13 +592,17 @@ class MyTheme {
             backgroundColor: MaterialStatePropertyAll(Color(0xFF0B1631)))),
     colorScheme: ColorScheme.dark(
       primary: accent,
-      secondary: accent,
-      background: Color(0xFF070E22),
+      secondary: cyan,
+      background: Color(0xFF0B1631),
+      surface: Color(0xFF112042),
+      onPrimary: Colors.white,
+      onSurface: Color(0xFFE8EEF9),
     ),
     popupMenuTheme: PopupMenuThemeData(
+        color: Color(0xFF112042),
         shape: RoundedRectangleBorder(
-      side: BorderSide(color: Colors.white24),
-      borderRadius: BorderRadius.all(Radius.circular(8.0)),
+      side: BorderSide(color: Color(0xFF2A4776)),
+      borderRadius: BorderRadius.all(Radius.circular(10.0)),
     )),
   ).copyWith(
     extensions: <ThemeExtension<dynamic>>[
@@ -1330,7 +1356,7 @@ Color? _msgboxColor(String type) {
   if (type.contains("error") || type == "re-input-password") {
     return Color(0xFFE04F5F);
   }
-  return Color(0xFF0A84FF);
+  return Color(0xFF0153F6);
 }
 
 Widget msgboxIcon(String type) {
@@ -3786,7 +3812,11 @@ Future<String?> _resolveLogoAsset(Brightness brightness) async {
 }
 
 class _Logo extends StatefulWidget {
-  const _Logo();
+  const _Logo({this.maxWidth = 300, this.maxHeight = 60, this.margin = 12});
+
+  final double maxWidth;
+  final double maxHeight;
+  final double margin;
 
   @override
   State<_Logo> createState() => _LogoState();
@@ -3817,9 +3847,11 @@ class _LogoState extends State<_Logo> {
             },
           );
           return Container(
-            constraints: BoxConstraints(maxWidth: 300, maxHeight: 60),
+            constraints: BoxConstraints(
+                maxWidth: widget.maxWidth, maxHeight: widget.maxHeight),
             child: image,
-          ).marginOnly(left: 12, right: 12, top: 12);
+          ).marginOnly(left: widget.margin,
+              right: widget.margin, top: widget.margin);
         }
         return const Offstage();
       },
@@ -3827,8 +3859,10 @@ class _LogoState extends State<_Logo> {
   }
 }
 
-// max 300 x 60
-Widget loadLogo() => const _Logo();
+// 默认 max 300 x 60；左栏调用点传 176 x 176（见 desktop_home_page.dart）
+Widget loadLogo(
+        {double maxWidth = 300, double maxHeight = 60, double margin = 12}) =>
+    _Logo(maxWidth: maxWidth, maxHeight: maxHeight, margin: margin);
 
 Widget loadIcon(double size) {
   return Image.asset('assets/icon.png',

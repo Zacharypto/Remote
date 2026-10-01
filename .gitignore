@@ -17,6 +17,14 @@ cert.pfx
 *png
 *svg
 *jpg
+# === Haxfer Remote：品牌 logo 必须入库 ===
+# 上面三行（*png / *svg / *jpg）是上游的全仓库通配，没有例外。上游自家
+# 图标是「先入库、再被 .gitignore 放过」的（该规则只对未跟踪文件生效）；
+# flutter/assets/logo*.png 是我们新拷进去的，不加例外会被忽略，CI 从 git
+# 检出时就缺这几张图 —— 界面里的 logo 会整块不显示。
+!flutter/assets/logo.png
+!flutter/assets/logo_light.png
+!flutter/assets/logo_dark.png
 sciter.dll
 **pdb
 src/bridge_generated.rs

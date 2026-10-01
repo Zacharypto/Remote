@@ -80,15 +80,15 @@ class _DesktopHomePageState extends State<DesktopHomePage>
     final isOutgoingOnly = bind.isOutgoingOnly();
     final children = <Widget>[
       if (!isOutgoingOnly) buildPresetPasswordWarning(),
+      Align(
+        alignment: Alignment.topLeft,
+        child: loadLogo(maxWidth: 176, maxHeight: 176),
+      ),
       if (bind.isCustomClient())
         Align(
           alignment: Alignment.center,
           child: loadPowered(context),
         ),
-      Align(
-        alignment: Alignment.center,
-        child: loadLogo(),
-      ),
       buildTip(context),
       if (!isOutgoingOnly) buildIDBoard(context),
       if (!isOutgoingOnly) buildPasswordBoard(context),
@@ -157,7 +157,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                         Icons.settings,
                         color: _editHover.value
                             ? textColor
-                            : Colors.grey.withOpacity(0.5),
+                            : MyTheme.iconMuted,
                         size: 22,
                       ),
                     ),
@@ -196,7 +196,14 @@ class _DesktopHomePageState extends State<DesktopHomePage>
         children: [
           Container(
             width: 2,
-            decoration: const BoxDecoration(color: MyTheme.accent),
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [MyTheme.accent, MyTheme.cyan],
+              ),
+              borderRadius: BorderRadius.all(Radius.circular(2)),
+            ),
           ).marginOnly(top: 5),
           Expanded(
             child: Padding(
@@ -303,7 +310,14 @@ class _DesktopHomePageState extends State<DesktopHomePage>
           Container(
             width: 2,
             height: 52,
-            decoration: BoxDecoration(color: MyTheme.accent),
+            decoration: const BoxDecoration(
+              gradient: LinearGradient(
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
+                colors: [MyTheme.accent, MyTheme.cyan],
+              ),
+              borderRadius: BorderRadius.all(Radius.circular(2)),
+            ),
           ),
           Expanded(
             child: Padding(
@@ -351,7 +365,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                                   Icons.refresh,
                                   color: refreshHover.value
                                       ? textColor
-                                      : Color(0xFFDDDDDD),
+                                      : MyTheme.iconMuted,
                                   size: 22,
                                 ))),
                           ),
@@ -366,7 +380,7 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                                 Icons.edit,
                                 color: editHover.value
                                     ? textColor
-                                    : Color(0xFFDDDDDD),
+                                    : MyTheme.iconMuted,
                                 size: 22,
                               ).marginOnly(right: 8, top: 4),
                             ),
@@ -608,8 +622,8 @@ class _DesktopHomePageState extends State<DesktopHomePage>
                 begin: Alignment.centerLeft,
                 end: Alignment.centerRight,
                 colors: [
-                  Color.fromARGB(255, 226, 66, 188),
-                  Color.fromARGB(255, 244, 114, 124),
+                  Color(0xff0153f6),
+                  Color(0xff02abfc),
                 ],
               )),
               padding: EdgeInsets.all(20),

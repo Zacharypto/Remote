@@ -253,7 +253,6 @@ pub fn translate_locale(name: String, locale: &str) -> String {
         if !crate::is_rustdesk() {
             if s.contains("RustDesk")
                 && !name.starts_with("upgrade_rustdesk_server_pro")
-                && name != "powered_by_me"
             {
                 let app_name = "Haxfer Remote".to_string();
                 if !app_name.contains("RustDesk") {

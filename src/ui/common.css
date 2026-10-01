@@ -1,9 +1,9 @@
 html {
-    var(accent): #0A84FF;
-    var(button): #2E96FF;
-    var(gray-bg): #F2F2EF;
-    var(bg): #F7F7F4;
-    var(border): #DCDBD5;
+    var(accent): #0153f6;
+    var(button): #0153f6;
+    var(gray-bg): #F1F5FB;
+    var(bg): #F7F9FC;
+    var(border): #D5E1F0;
     var(hover-border): #999;
     var(text): #222;
     var(placeholder): #aaa;
