@@ -209,6 +209,16 @@ impl IceRoute {
 static SHOULD_EXIT: AtomicBool = AtomicBool::new(false);
 static MANUAL_RESTARTED: AtomicBool = AtomicBool::new(false);
 static SENT_REGISTER_PK: AtomicBool = AtomicBool::new(false);
+/// Haxfer: UDP 注册连续失败后置真 —— 让 start() 改走 TCP。
+///
+/// 为什么不复用 is_udp_disabled():
+///   `is_udp_disabled()` 读的是用户设置项 `disable-udp`，UI 上的
+///   「Disable UDP」开关就是它。若直接改它，用户会看到设置被程序偷偷
+///   勾上（且关了还会被重新勾回去），语义混乱。这里用一个**进程内**标记，
+///   只影响路由决策，不动用户设置。
+///   置真后本进程内不会自行复位（UDP 恢复与否无从可靠观测），
+///   需要回到 UDP 时重启客户端即可。
+static TCP_FALLBACK: AtomicBool = AtomicBool::new(false);
 pub(crate) static NEEDS_DEPLOY: AtomicBool = AtomicBool::new(false);
 #[cfg(target_os = "android")]
 static NOTIFIED_NEEDS_DEPLOY: AtomicBool = AtomicBool::new(false);
@@ -470,6 +480,34 @@ impl RendezvousMediator {
                                     }
                                     last_dns_check = Instant::now();
                                 }
+                                // Haxfer: UDP 已经连续 MAX_FAILS2 次拿不到
+                                // RegisterPeerResponse，基本可以判定本机网络
+                                // 出口封了 UDP（VPN / 企业防火墙的典型症状）。
+                                //
+                                // 关键：这里**先 rebind 再判定** —— 上面那段
+                                // rebind 是上游对「网络切换后旧 socket 失效」的
+                                // 处理，让它在切 TCP 前最后一次尝试自愈。
+                                // 若 rebind 后仍失败，下一轮仍会走到这里，
+                                // 于是切 TCP。
+                                if !TCP_FALLBACK.load(Ordering::SeqCst) {
+                                    TCP_FALLBACK.store(true, Ordering::SeqCst);
+                                    log::info!(
+                                        "UDP register failed {} times, falling back to TCP",
+                                        fails
+                                    );
+                                    // 借上游既有的 restart 机制让 start_all 重入
+                                    // start() —— 此时选择条件命中 TCP_FALLBACK，
+                                    // 于是这一轮走 start_tcp。
+                                    Self::restart();
+                                } else {
+                                    // 已经在 TCP fallback 上还是失败 —— 说明
+                                    // 连 TCP 也到不了服务端（网络完全不通）。
+                                    // 记一条明确日志便于排错，不做更多动作。
+                                    log::warn!(
+                                        "UDP fallback active but still failing (fails={})",
+                                        fails
+                                    );
+                                }
                             } else if fails >= MAX_FAILS1 {
                                 Config::update_latency(&host, 0);
                                 old_latency = 0;
@@ -643,10 +681,24 @@ impl RendezvousMediator {
                     if last_recv_msg.elapsed().as_millis() as u64 > rz.keep_alive as u64 * 3 / 2 {
                         bail!("Rendezvous connection is timeout");
                     }
-                    if (!Config::get_key_confirmed() ||
-                        !Config::get_host_key_confirmed(&rz.host_prefix)) &&
-                        last_register_sent.map(|x| x.elapsed().as_millis() as i64).unwrap_or(REG_INTERVAL) >= REG_INTERVAL {
-                        rz.register_pk(Sink::Stream(&mut conn)).await?;
+                    // Haxfer: 上游这里**只发 RegisterPk**，且一旦服务端回 OK
+                    // 就不再进入本分支 —— 于是 TCP 通道上不再有任何保活流量，
+                    // 而 hbbs 的在线判定只认 RegisterPeer 刷新的 last_reg_time
+                    // （REG_TIMEOUT = 30s），30 秒后本机被判离线。
+                    // 现在：未确认 → 发 RegisterPk；已确认 → 周期性发 RegisterPeer。
+                    // 两者都按 REG_INTERVAL 节流，避免空转。
+                    let due = last_register_sent
+                        .map(|x| x.elapsed().as_millis() as i64)
+                        .unwrap_or(REG_INTERVAL)
+                        >= REG_INTERVAL;
+                    if due {
+                        if !Config::get_key_confirmed()
+                            || !Config::get_host_key_confirmed(&rz.host_prefix)
+                        {
+                            rz.register_pk(Sink::Stream(&mut conn)).await?;
+                        } else {
+                            rz.register_peer(Sink::Stream(&mut conn)).await?;
+                        }
                         last_register_sent = Some(Instant::now());
                     }
                 }
@@ -662,6 +714,9 @@ impl RendezvousMediator {
             || Config::is_proxy()
             || use_ws()
             || crate::is_udp_disabled()
+            // Haxfer: UDP 注册连续超时 → 自动落到 TCP。
+            // 正常情况下这个标记恒为 false，行为与上游完全一致。
+            || TCP_FALLBACK.load(Ordering::SeqCst)
         {
             Self::start_tcp(server, host).await
         } else {
